@@ -15,11 +15,16 @@
 (define WORK_SECS (* 25 60))
 (define WORK_HISTORY '())
 
+;; (deftype fruit () '(member apple orange banana))
+
 (define-structure work-block time-end finished block-type)
 ;; (define p (make-work-block 0 #f 0))
 
 (define (add-workblock block)
   (set! WORK_HISTORY (cons block WORK_HISTORY)))
+
+;; (define (next-workblock lst)
+;;   ())
 
 (define (get-seconds cur)
   (let ([seconds (/ cur 60)])
@@ -32,12 +37,12 @@
 
 (define (get-separator cur)
   (let ([secs (inexact->exact(truncate (* cur 2)))])
-    (if (eq? (modulo secs 2) 1)
+    (if (= (modulo secs 2) 1)
 	":"
 	" "
 	)))
 (define (two-digitalize seconds)
-  (if (eq? (string-length seconds) 1)
+  (if (= (string-length seconds) 1)
       (string-append "0" seconds)
       seconds))
 

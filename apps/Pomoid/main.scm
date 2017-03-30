@@ -10,10 +10,12 @@
 (define gui #f)
 (define finalTimer #f)
 (define timer-label #f)
-(define LONG_BREAK_SECS (* 15 60))
-(define SHORT_BREAK_SECS (* 5 60))
-(define WORK_SECS (* 25 60))
 (define WORK_HISTORY '())
+
+;;(define intervals `((,interval work 25*60) (,interval long-break 5*60) (,interval short-break 15*60)))
+;;(struct interval (name duration))
+;; (define intervals-duratoin '(25*60 5*60 15*60))
+;; (define-structure point x y color)
 
 ;; (deftype fruit () '(member apple orange banana))
 
@@ -22,6 +24,16 @@
 
 (define (add-workblock block)
   (set! WORK_HISTORY (cons block WORK_HISTORY)))
+
+(define (get-time interval)
+  (cond [(eqv? interval 'short-break) (* 5 60)]
+        [(eqv? interval 'long-break) (* 15 60)]
+        [else (* 25 60)])) ;; 'work
+
+(define (get-time-interval lst)
+  (if (null? lst)
+      (get-time '())
+      (get-time (car lst))))
 
 ;; (define (next-workblock lst)
 ;;   ())
@@ -41,6 +53,7 @@
 	":"
 	" "
 	)))
+
 (define (two-digitalize seconds)
   (if (= (string-length seconds) 1)
       (string-append "0" seconds)
@@ -64,9 +77,10 @@
   (- until ##now))
 
 (define (button-callback g w t x y)
-  (let ((oldcolor (glgui-widget-get g w 'color)))
+  (let ((oldcolor (glgui-widget-get g w 'color))
+        (time-interval (get-time-interval WORK_HISTORY)))
     (glgui-widget-set! g w 'color (if (= oldcolor White) Red White))
-    (set! finalTimer (+ ##now LONG_BREAK_SECS))
+    (set! finalTimer (+ ##now time-interval))
     (glgui-widget-set! g timer-label 'label (number->string (time-diff-until finalTimer)))
   ))
 

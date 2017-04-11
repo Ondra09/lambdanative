@@ -30,6 +30,11 @@
         [(eqv? interval 'long-break) (* 15 60)]
         [else (* 25 60)])) ;; 'work
 
+(define (count-work-blocks lst)
+  (if (null? lst)
+      0
+      (add1 (count-work-blocks (cdr lst)))))
+
 (define (get-time-interval lst)
   (if (null? lst)
       (get-time '())
